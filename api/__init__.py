@@ -16,7 +16,7 @@ import os
 import random, string
 
 app = Flask(__name__)
-FileRoute='%s/' %os.path.dirname(os.path.abspath(__file__))
+FileRoute='%s' %os.path.dirname(os.path.abspath(__file__))
 
 line_bot_api = LineBotApi('vxJfXmnKPVhcOp7rQipUTabXQp/Zc227v0dRT0Am+a4pl/nr6hUDLRsJGoe8aY8/1MW4sqyo+NQ7+WkAH+Madtn4DlYvzaKOqSQE+uSCtmHIPLTdguf3UVjyQ8XJdiLg8Otg2imHALz2mdhXYU8yYwdB04t89/1O/w1cDnyilFU=')
 handler = WebhookHandler('0ef7975dd3724126dec33c34af95d46a')
@@ -44,16 +44,17 @@ def handle_message(event):
     if event.message.text[0] == '/' or event.message.text[0] == '／':
         name = ''.join(random.choice(string.ascii_letters) for x in range(10))
 
-        resp = requests.get("http://api.giphy.com/v1/gifs/random?api_key=V5pYPSB0TKF00sZUnt7feN8cjbikI1UF&tag=%s" %('cat'))
+        resp = requests.get("http://api.giphy.com/v1/gifs/random?api_key=V5pYPSB0TKF00sZUnt7feN8cjbikI1UF&tag=%s" %(event.message.text))
         resp_json = resp.json()
-        git_source = resp_json['data']['images']['fixed_height_still']['url']
-        with open('%s/data/gif%s.gif' %(FileRoute, name), 'wb') as f:
-            f.write(requests.get(git_source).content)
-        clip = mp.VideoFileClip("%s/data/gif/%s.gif" %(FileRoute, name))
-        clip.write_videofile("%s/data/mp4/%s.mp4" %(FileRoute, name))
+        get_source_gif = resp_json['data']['images']['fixed_height_still']['url']
+        git_source_video = resp_json['data']['images']['fixed_width']['mp4']
+#        with open('%s/data/gif/%s.gif' %(FileRoute, name), 'wb') as f:
+#            f.write(requests.get(git_source).content)
+#        clip = mp.VideoFileClip("%s/data/gif/%s.gif" %(FileRoute, name))
+#        clip.write_videofile("%s/data/mp4/%s.mp4" %(FileRoute, name))
         video_message = VideoSendMessage(
-            original_content_url='https://messfar.com/giphy/data/mp4/%s.mp4' %name,
-            preview_image_url=git_source
+            original_content_url=get_source_video
+            preview_image_url=git_source_gif
         )
         line_bot_api.reply_message(
             event.reply_token,video_message)
