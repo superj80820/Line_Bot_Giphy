@@ -53,7 +53,7 @@ def handle_message(event):
 #        clip = mp.VideoFileClip("%s/data/gif/%s.gif" %(FileRoute, name))
 #        clip.write_videofile("%s/data/mp4/%s.mp4" %(FileRoute, name))
         video_message = VideoSendMessage(
-            original_content_url=get_source_video
+            original_content_url=get_source_video,
             preview_image_url=git_source_gif
         )
         line_bot_api.reply_message(
